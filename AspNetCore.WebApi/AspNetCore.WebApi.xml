@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AspNetCore.WebApi</name>
+    </assembly>
+    <members>
+        <member name="M:AspNetCore.WebApi.Controllers.ProductController.FindAllAsync">
+            <summary>
+            Finds all products.
+            </summary>
+            <remarks>Returns all products.</remarks>
+            <response code="200">Successful operation.</response>
+            <response code="500">Internal server error occurred.</response>
+        </member>
+        <member name="M:AspNetCore.WebApi.Controllers.ProductController.FindByIdAsyn(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Finds product by ID.
+            </summary>
+            <remarks>Returns a single product.</remarks>
+            <param name="id">ID of product to return.</param>
+            <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for the task to complete.</param>
+            <response code="200">Successful operation.</response>
+            <response code="404">The product was not found.</response>
+            <response code="500">Internal server error occurred.</response>
+        </member>
+        <member name="M:AspNetCore.WebApi.Controllers.ProductController.UpdateNameAsync(System.Int32,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Updates name of product by ID.
+            </summary>
+            <param name="id">ID of product to update.</param>
+            <param name="name">New name of product.</param>
+            <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for the task to complete.</param>
+            <response code="200">Product name was updated.</response>
+            <response code="404">The product was not found.</response>
+            <response code="409">The product with the same name already exists.</response>
+            <response code="500">Internal server error occurred.</response>
+        </member>
+        <member name="M:AspNetCore.WebApi.Controllers.ProductController.FindAllAsync(System.Int32,System.Int32)">
+            <summary>
+            Finds all products.
+            </summary>
+            <remarks>Returns all products.</remarks>
+            <param name="pageNumber">The number of page to return.</param>
+            <param name="pageSize">The numbers of items to return in a single page.</param>
+            <response code="200">Successful operation.</response>
+            <response code="500">Internal server error occurred.</response>
+        </member>
+    </members>
+</doc>

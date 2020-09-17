@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 
-namespace AspNetCore.WebApi
+namespace AspNetCore.WebApi.Filters
 {
     public class HttpResponseExceptionFilter : IActionFilter, IOrderedFilter
     {
