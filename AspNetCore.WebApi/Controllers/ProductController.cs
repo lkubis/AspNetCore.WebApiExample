@@ -1,9 +1,11 @@
 ﻿using AspNetCore.Domain;
 using AspNetCore.WebApi.DTOs;
 using AspNetCore.WebApi.Extensions;
+using AspNetCore.WebApi.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -85,8 +87,24 @@ namespace AspNetCore.WebApi.Controllers
         [ApiExplorerSettings(GroupName = "v2.0")]
         [ProducesResponseType(typeof(List<ProductDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseHeader("X-Pagination-Metadata", StatusCodes.Status200OK, Type = nameof(PaginationMetadata))]
         [HttpGet("{pageNumber:int:min(1)}/{pageSize:int:range(1,5000)}", Name = "FindAllProductsPaged")]
         public async Task<IActionResult> FindAllAsync(int pageNumber = 1, int pageSize = 50)
-            => Ok((await ProductManager.FindAllPagedAsync(pageNumber, pageSize)).Select(x => x.ToDTO()));
+        {
+            var products = await ProductManager.FindAllPagedAsync(pageNumber, pageSize);
+
+            var paginationMetadata = new PaginationMetadata()
+            {
+                TotalCount = products.TotalCount,
+                TotalPages = products.TotalPages,
+                PageNumber = products.PageNumber,
+                PageSize = products.PageSize,
+                HasNextPage = products.HasNextPage,
+                HasPreviousPage = products.HasPreviousPage
+            };
+            Response.Headers.Add("X-Pagination-Metadata", JsonConvert.SerializeObject(paginationMetadata));
+
+            return Ok(products.Select(x => x.ToDTO()));
+        }
     }
 }

@@ -65,6 +65,7 @@ namespace AspNetCore.WebApi
                 });
 
                 x.OperationFilter<RemoveVersionParameterFilter>();
+                x.OperationFilter<ResponseHeadersFilter>();
                 x.DocumentFilter<ReplaceVersionWithExactValueInPathFilter>();
                 x.EnableAnnotations();
 

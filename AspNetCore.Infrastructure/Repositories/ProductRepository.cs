@@ -45,6 +45,5 @@ namespace AspNetCore.Infrastructure.Repositories
 
         public IQueryable<Product> GetAll()
             => _dataContext.Products;
-
     }
 }
