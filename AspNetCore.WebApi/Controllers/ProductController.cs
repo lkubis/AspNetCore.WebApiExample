@@ -21,11 +21,11 @@ namespace AspNetCore.WebApi.Controllers
     [Produces("application/json")]
     public class ProductController : ControllerBase
     {
-        protected IProductManager ProductManager { get; }
+        private IProductManager _productManager;
 
         public ProductController(IProductManager productManager)
         {
-            ProductManager = productManager;
+            _productManager = productManager;
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace AspNetCore.WebApi.Controllers
         [ProducesResponseType(typeof(List<ProductDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> FindAllAsync()
-            => Ok((await ProductManager.FindAll().AsNoTracking().ToListAsync()).Select(x => x.ToDTO()));
+            => Ok((await _productManager.FindAll().AsNoTracking().ToListAsync()).Select(x => x.ToDTO()));
 
 
         /// <summary>
@@ -54,8 +54,8 @@ namespace AspNetCore.WebApi.Controllers
         [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> FindByIdAsyn(int id, CancellationToken cancellationToken = default)
-            => Ok((await ProductManager.FindByIdAsync(id, cancellationToken)).ToDTO());
+        public async Task<IActionResult> FindByIdAsync(int id, CancellationToken cancellationToken = default)
+            => Ok((await _productManager.FindByIdAsync(id, cancellationToken)).ToDTO());
 
         /// <summary>
         /// Updates name of product by ID.
@@ -73,7 +73,7 @@ namespace AspNetCore.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateNameAsync(int id, [FromBody] string name, CancellationToken cancellationToken = default)
-            => Ok((await ProductManager.UpdateNameAsync(id, name, cancellationToken)).ToDTO());
+            => Ok((await _productManager.UpdateNameAsync(id, name, cancellationToken)).ToDTO());
 
         /// <summary>
         /// Finds all products.
@@ -91,7 +91,7 @@ namespace AspNetCore.WebApi.Controllers
         [HttpGet("{pageNumber:int:min(1)}/{pageSize:int:range(1,5000)}", Name = "FindAllProductsPaged")]
         public async Task<IActionResult> FindAllAsync(int pageNumber = 1, int pageSize = 50)
         {
-            var products = await ProductManager.FindAllPagedAsync(pageNumber, pageSize);
+            var products = await _productManager.FindAllPagedAsync(pageNumber, pageSize);
 
             var paginationMetadata = new PaginationMetadata()
             {

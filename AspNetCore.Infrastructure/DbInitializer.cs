@@ -1,6 +1,7 @@
 ﻿using AspNetCore.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 
 namespace AspNetCore.Infrastructure
 {
@@ -8,14 +9,26 @@ namespace AspNetCore.Infrastructure
     {
         public void Initialize(IServiceProvider services)
         {
-            var productManager = services.GetService<IProductManager>();
+            var dataContext = services.GetService<DataContext>();
 
             // Debug data
-            var random = new Random();
-            for (int i = 0; i < 100; i++)
-                productManager.CreateAsync($"Name_{i}", $"Description_{i}", $"/api/resources/{i}", (decimal)random.NextDouble() * 1000).GetAwaiter().GetResult();
+            var hasProducts = dataContext.Products.Any();
+            if (!hasProducts)
+            {
+                var random = new Random();
+                for (int i = 0; i < 100; i++)
+                {
+                    dataContext.Products.Add(new Product()
+                    {
+                        Name = $"Name_{i}",
+                        Description = $"Description_{i}",
+                        ImgUri = $"/api/resources/{i}",
+                        Price = (decimal)random.NextDouble() * 1000
+                    });
+                }
 
-            productManager.SaveChangesAsync().GetAwaiter().GetResult();
+                dataContext.SaveChanges();
+            }
         }
     }
 }
