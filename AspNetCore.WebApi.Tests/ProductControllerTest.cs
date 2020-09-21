@@ -50,7 +50,7 @@ namespace AspNetCore.WebApi.Tests
         }
 
         [Fact]
-        public async Task FindById_ExistingIdPassed_ReturnsRightItem()
+        public async Task FindById_ExistingIdPassed_ReturnsUpdatedItem()
         {
             // Arrange
             var request = new HttpRequestMessage(new HttpMethod("GET"), "/api/v1.0/products/1");
@@ -64,10 +64,10 @@ namespace AspNetCore.WebApi.Tests
         }
 
         [Fact]
-        public async Task UpdatedName_ValidNamePassed_ReturnsRightItem()
+        public async Task UpdatedName_ValidNamePassed_ReturnsUpdatedItem()
         {
             // Arrange
-            var request = new HttpRequestMessage(new HttpMethod("PUT"), "/api/v1.0/products/1");
+            var request = new HttpRequestMessage(new HttpMethod("PUT"), "/api/v1.0/products/1/name");
             request.Content = new StringContent(JsonConvert.SerializeObject("NewName"), Encoding.UTF8, "application/json");
 
             // Act
@@ -82,7 +82,7 @@ namespace AspNetCore.WebApi.Tests
         public async Task UpdatedName_ExistingNamePassed_ReturnsConflictResult()
         {
             // Arrange
-            var request = new HttpRequestMessage(new HttpMethod("PUT"), "/api/v1.0/products/1");
+            var request = new HttpRequestMessage(new HttpMethod("PUT"), "/api/v1.0/products/1/name");
             request.Content = new StringContent(JsonConvert.SerializeObject("Name_10"), Encoding.UTF8, "application/json");
 
             // Act
@@ -90,6 +90,21 @@ namespace AspNetCore.WebApi.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task UpdatedDescription_ValidDescriptionPassed_ReturnsUpdatedItem()
+        {
+            // Arrange
+            var request = new HttpRequestMessage(new HttpMethod("PUT"), "/api/v1.0/products/1/description");
+            request.Content = new StringContent(JsonConvert.SerializeObject("NewDescription"), Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await _client.SendAsync(request);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal("NewDescription", (await GetAsync<ProductDTO>(response.Content)).Description);
         }
 
         [Fact]

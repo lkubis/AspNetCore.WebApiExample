@@ -21,7 +21,7 @@ namespace AspNetCore.WebApi.Controllers
     [Produces("application/json")]
     public class ProductController : ControllerBase
     {
-        private IProductManager _productManager;
+        private readonly IProductManager _productManager;
 
         public ProductController(IProductManager productManager)
         {
@@ -67,13 +67,29 @@ namespace AspNetCore.WebApi.Controllers
         /// <response code="404">The product was not found.</response>
         /// <response code="409">The product with the same name already exists.</response>
         /// <response code="500">Internal server error occurred.</response>
-        [HttpPut("{id}", Name = "UpdateProduct")]
+        [HttpPut("{id}/name", Name = "UpdateProductName")]
         [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateNameAsync(int id, [FromBody] string name, CancellationToken cancellationToken = default)
             => Ok((await _productManager.UpdateNameAsync(id, name, cancellationToken)).ToDTO());
+
+        /// <summary>
+        /// Updates description of product by ID.
+        /// </summary>
+        /// <param name="id">ID of product to update.</param>
+        /// <param name="description">New description of product.</param>
+        /// <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for the task to complete.</param>
+        /// <response code="200">Product description was updated.</response>
+        /// <response code="404">The product was not found.</response>
+        /// <response code="500">Internal server error occurred.</response>
+        [HttpPut("{id}/description", Name = "UpdateProductDescription")]
+        [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateDescriptionAsync(int id, [FromBody] string description, CancellationToken cancellationToken = default)
+            => Ok((await _productManager.UpdateDescriptionAsync(id, description, cancellationToken)).ToDTO());
 
         /// <summary>
         /// Finds all products.

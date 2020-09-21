@@ -83,6 +83,15 @@ namespace AspNetCore.Infrastructure.Managers
             return product;
         }
 
+        public async Task<Product> UpdateDescriptionAsync(int id, string description, CancellationToken cancellationToken = default)
+        {
+            var product = await FindByIdAsync(id, cancellationToken);
+            product.Description = description;
+
+            await SaveChangesAsync(cancellationToken);
+            return product;
+        }
+
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
             => _dataContext.SaveChangesAsync(cancellationToken);
     }

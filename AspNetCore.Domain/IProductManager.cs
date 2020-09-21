@@ -8,6 +8,7 @@ namespace AspNetCore.Domain
     {
         Task<Product> CreateAsync(string name, string description, string imgUri, decimal price, CancellationToken cancellationToken = default);
         Task<Product> UpdateNameAsync(int id, string name, CancellationToken cancellationToken = default);
+        Task<Product> UpdateDescriptionAsync(int id, string description, CancellationToken cancellationToken = default);
 
         IQueryable<Product> FindAll();
         Task<PaginatedList<Product>> FindAllPagedAsync(int pageNumber = 1, int pageSize = 50, CancellationToken cancellationToken = default);

@@ -35,6 +35,17 @@
             <response code="409">The product with the same name already exists.</response>
             <response code="500">Internal server error occurred.</response>
         </member>
+        <member name="M:AspNetCore.WebApi.Controllers.ProductController.UpdateDescriptionAsync(System.Int32,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Updates description of product by ID.
+            </summary>
+            <param name="id">ID of product to update.</param>
+            <param name="description">New description of product.</param>
+            <param name="cancellationToken">A System.Threading.CancellationToken to observe while waiting for the task to complete.</param>
+            <response code="200">Product description was updated.</response>
+            <response code="404">The product was not found.</response>
+            <response code="500">Internal server error occurred.</response>
+        </member>
         <member name="M:AspNetCore.WebApi.Controllers.ProductController.FindAllAsync(System.Int32,System.Int32)">
             <summary>
             Finds all products.

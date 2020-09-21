@@ -11,23 +11,33 @@ namespace AspNetCore.WebApi.Filters
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            if (context.Exception is BusinessException businessException)
+            if (context.Exception is null)
+                return;
+
+            ObjectResult result;
+            switch (context.Exception)
             {
-                var result = new ObjectResult(businessException.Message);
-                switch (businessException.Code)
-                {
-                    case BusinessExceptions.ProductAlreadyExists:
-                        result.StatusCode = (int)HttpStatusCode.Conflict;
-                        break;
+                case BusinessException businessException:
+                    result = new ObjectResult(businessException.Message);
+                    switch (businessException.Code)
+                    {
+                        case BusinessExceptions.ProductAlreadyExists:
+                            result.StatusCode = (int)HttpStatusCode.Conflict;
+                            break;
 
-                    case BusinessExceptions.ProductDoesNotExist:
-                        result.StatusCode = (int)HttpStatusCode.NotFound;
-                        break;
-                }
+                        case BusinessExceptions.ProductDoesNotExist:
+                            result.StatusCode = (int)HttpStatusCode.NotFound;
+                            break;
+                    }
+                    break;
 
-                context.Result = result;
-                context.ExceptionHandled = true;
+                default:
+                    result = new ObjectResult("Internal server error.") { StatusCode = (int)HttpStatusCode.InternalServerError };
+                    break;
             }
+
+            context.Result = result;
+            context.ExceptionHandled = true;
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
