@@ -67,7 +67,7 @@ namespace AspNetCore.WebApi.Tests
         public async Task UpdatedName_ValidNamePassed_ReturnsUpdatedItem()
         {
             // Arrange
-            var request = new HttpRequestMessage(new HttpMethod("PUT"), "/api/v1.0/products/1/name");
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), "/api/v1.0/products/1/name");
             request.Content = new StringContent(JsonConvert.SerializeObject("NewName"), Encoding.UTF8, "application/json");
 
             // Act
@@ -82,7 +82,7 @@ namespace AspNetCore.WebApi.Tests
         public async Task UpdatedName_ExistingNamePassed_ReturnsConflictResult()
         {
             // Arrange
-            var request = new HttpRequestMessage(new HttpMethod("PUT"), "/api/v1.0/products/1/name");
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), "/api/v1.0/products/1/name");
             request.Content = new StringContent(JsonConvert.SerializeObject("Name_10"), Encoding.UTF8, "application/json");
 
             // Act
@@ -96,7 +96,7 @@ namespace AspNetCore.WebApi.Tests
         public async Task UpdatedDescription_ValidDescriptionPassed_ReturnsUpdatedItem()
         {
             // Arrange
-            var request = new HttpRequestMessage(new HttpMethod("PUT"), "/api/v1.0/products/1/description");
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), "/api/v1.0/products/1/description");
             request.Content = new StringContent(JsonConvert.SerializeObject("NewDescription"), Encoding.UTF8, "application/json");
 
             // Act

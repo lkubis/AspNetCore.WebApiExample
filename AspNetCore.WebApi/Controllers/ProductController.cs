@@ -67,7 +67,7 @@ namespace AspNetCore.WebApi.Controllers
         /// <response code="404">The product was not found.</response>
         /// <response code="409">The product with the same name already exists.</response>
         /// <response code="500">Internal server error occurred.</response>
-        [HttpPut("{id}/name", Name = "UpdateProductName")]
+        [HttpPatch("{id}/name", Name = "UpdateProductName")]
         [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -84,7 +84,7 @@ namespace AspNetCore.WebApi.Controllers
         /// <response code="200">Product description was updated.</response>
         /// <response code="404">The product was not found.</response>
         /// <response code="500">Internal server error occurred.</response>
-        [HttpPut("{id}/description", Name = "UpdateProductDescription")]
+        [HttpPatch("{id}/description", Name = "UpdateProductDescription")]
         [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
