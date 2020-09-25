@@ -5,6 +5,7 @@ using AspNetCore.Infrastructure.Repositories;
 using AspNetCore.WebApi.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System.IO;
+using System.Net;
 
 namespace AspNetCore.WebApi
 {
@@ -30,6 +32,7 @@ namespace AspNetCore.WebApi
                 .AddControllers(options =>
                 {
                     options.Filters.Add(new HttpResponseExceptionFilter());
+                    options.Filters.Add(new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
                     options.RespectBrowserAcceptHeader = false;
                 })
                 .AddJsonOptions(options =>

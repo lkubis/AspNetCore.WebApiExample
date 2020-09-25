@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,9 +36,8 @@ namespace AspNetCore.WebApi.Controllers
         /// <response code="200">Successful operation.</response>
         /// <response code="500">Internal server error occurred.</response>
         [HttpGet("", Name = "FindAllProducts")]
-        [ProducesResponseType(typeof(List<ProductDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> FindAllAsync()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ProductDTO>>> FindAllAsync()
             => Ok((await _productManager.FindAll().AsNoTracking().ToListAsync()).Select(x => x.ToDTO()));
 
 
@@ -51,10 +51,9 @@ namespace AspNetCore.WebApi.Controllers
         /// <response code="404">The product was not found.</response>
         /// <response code="500">Internal server error occurred.</response>
         [HttpGet("{id}", Name = "FindProductById")]
-        [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> FindByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<ProductDTO>> FindByIdAsync(int id, CancellationToken cancellationToken = default)
             => Ok((await _productManager.FindByIdAsync(id, cancellationToken)).ToDTO());
 
         /// <summary>
@@ -68,12 +67,16 @@ namespace AspNetCore.WebApi.Controllers
         /// <response code="409">The product with the same name already exists.</response>
         /// <response code="500">Internal server error occurred.</response>
         [HttpPatch("{id}/name", Name = "UpdateProductName")]
-        [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateNameAsync(int id, [FromBody] string name, CancellationToken cancellationToken = default)
-            => Ok((await _productManager.UpdateNameAsync(id, name, cancellationToken)).ToDTO());
+        public async Task<ActionResult<ProductDTO>> UpdateNameAsync(int id, [FromBody][Required] string name, CancellationToken cancellationToken = default)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok((await _productManager.UpdateNameAsync(id, name, cancellationToken)).ToDTO());
+        }
 
         /// <summary>
         /// Updates description of product by ID.
@@ -85,10 +88,9 @@ namespace AspNetCore.WebApi.Controllers
         /// <response code="404">The product was not found.</response>
         /// <response code="500">Internal server error occurred.</response>
         [HttpPatch("{id}/description", Name = "UpdateProductDescription")]
-        [ProducesResponseType(typeof(ProductDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateDescriptionAsync(int id, [FromBody] string description, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<ProductDTO>> UpdateDescriptionAsync(int id, [FromBody] string description, CancellationToken cancellationToken = default)
             => Ok((await _productManager.UpdateDescriptionAsync(id, description, cancellationToken)).ToDTO());
 
         /// <summary>
@@ -101,11 +103,10 @@ namespace AspNetCore.WebApi.Controllers
         /// <response code="500">Internal server error occurred.</response>
         [MapToApiVersion("2.0")]
         [ApiExplorerSettings(GroupName = "v2.0")]
-        [ProducesResponseType(typeof(List<ProductDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseHeader("X-Pagination-Metadata", StatusCodes.Status200OK, Type = nameof(PaginationMetadata))]
         [HttpGet("{pageNumber:int:min(1)}/{pageSize:int:range(1,5000)}", Name = "FindAllProductsPaged")]
-        public async Task<IActionResult> FindAllAsync(int pageNumber = 1, int pageSize = 50)
+        public async Task<ActionResult<List<ProductDTO>>> FindAllAsync(int pageNumber, int pageSize)
         {
             var products = await _productManager.FindAllPagedAsync(pageNumber, pageSize);
 
